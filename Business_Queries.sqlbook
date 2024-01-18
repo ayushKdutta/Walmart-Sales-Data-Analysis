@@ -4,10 +4,10 @@
 #### How many unique cities does the data have?
 -- SQLBook: Code
 select DISTINCT(city) from wallmart_data;
-
 Yangon
 Naypyitaw
 Mandalay
+
 -- SQLBook: Markup
 #### In which city is each branch? 
 -- SQLBook: Code
@@ -16,6 +16,7 @@ select distinct(city), branch from wallmart_data;
 Yangon,A
 Naypyitaw,C
 Mandalay,B
+
 -- SQLBook: Markup
 ## Product based questions
 -- SQLBook: Markup
@@ -25,6 +26,7 @@ select count(distinct(product_line)) as num_of_unique_product_lines
 from wallmart_data;
 
 6
+
 -- SQLBook: Markup
 #### What is the most common payment method?
 -- SQLBook: Code
