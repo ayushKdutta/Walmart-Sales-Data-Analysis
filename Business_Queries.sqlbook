@@ -1,0 +1,283 @@
+-- SQLBook: Markup
+## Business Questions
+-- SQLBook: Markup
+#### How many unique cities does the data have?
+-- SQLBook: Code
+select DISTINCT(city) from wallmart_data;
+
+Yangon
+Naypyitaw
+Mandalay
+-- SQLBook: Markup
+#### In which city is each branch? 
+-- SQLBook: Code
+select distinct(city), branch from wallmart_data;
+
+Yangon,A
+Naypyitaw,C
+Mandalay,B
+-- SQLBook: Markup
+## Product based questions
+-- SQLBook: Markup
+#### How many unique product lines does the data have?
+-- SQLBook: Code
+select count(distinct(product_line)) as num_of_unique_product_lines
+from wallmart_data;
+
+6
+-- SQLBook: Markup
+#### What is the most common payment method?
+-- SQLBook: Code
+select max(payment) from wallmart_data
+
+Ewallet
+-- SQLBook: Markup
+#### What is the most selling product line?
+-- SQLBook: Code
+select * from (select product_line, sum(quantity) as total_volume from wallmart_data
+group by product_line
+order by total_volume desc) as result
+limit 1;
+
+Electronic accessories
+961
+-- SQLBook: Markup
+#### What is the total revenue by month?
+-- SQLBook: Code
+select month_name, sum(total)
+from wallmart_data
+group by month_name
+
+March,108867.15
+January,116291.868
+February,95727.3765
+-- SQLBook: Markup
+#### What month had the largest COGS?
+
+-- SQLBook: Code
+select month_name, cogs from wallmart_data
+where cogs = (
+select max(cogs) from wallmart_data)
+
+February
+993.00
+-- SQLBook: Markup
+#### What product line had the largest revenue?
+-- SQLBook: Code
+select product_line, sum(total) as revenue from wallmart_data
+group by product_line
+order by revenue DESC
+limit 1
+
+'Food and beverages',56144.844
+-- SQLBook: Markup
+#### What is the city with the largest revenue?
+-- SQLBook: Code
+select city, sum(total) as revenue from wallmart_data
+group by city
+order by revenue DESC
+limit 1
+
+Naypyitaw,110490.7755
+-- SQLBook: Markup
+#### What product line had the largest VAT?
+-- SQLBook: Code
+select product_line, sum(tax_pct) as vat_sum
+from wallmart_data
+group by product_line
+order by vat_sum DESC
+limit 1;
+
+
+'Food and beverages',2673.564
+-- SQLBook: Markup
+#### Fetch each product line and add a column to those product line showing "Good", "Bad". Good if its greater than average sales
+-- SQLBook: Code
+
+
+-- SQLBook: Code
+
+-- SQLBook: Markup
+#### Which branch sold more products than average product sold?
+-- SQLBook: Code
+select branch, sum(quantity) as sold_qty
+from wallmart_data
+group by branch
+having sold_qty > (select avg(quantity) from wallmart_data)
+order by sold_qty desc
+
+
+A
+1849
+
+C
+1828
+
+B
+1795
+-- SQLBook: Markup
+#### What is the most common product line by gender?
+-- SQLBook: Code
+select product_line, count(gender) as num_total
+from wallmart_data
+GROUP BY product_line
+ORDER BY num_total desc
+
+Fashion accessories,178
+-- SQLBook: Markup
+#### What is the average rating of each product line?
+-- SQLBook: Code
+select product_line, avg(rating)
+from wallmart_data
+group by product_line
+
+Food and beverages,7.11322
+Health and beauty,6.98344
+Sports and travel,6.85951
+Fashion accessories,7.02921
+Home and lifestyle,6.8375
+Electronic accessories,6.90651
+-- SQLBook: Markup
+## Sales based questions
+-- SQLBook: Markup
+#### Number of sales made in each time of the day per weekday
+-- SQLBook: Code
+select time_of_day,count(*)
+from wallmart_data
+group by time_of_day
+
+EVENING,531
+AFTERNOON,274
+MORNING,190
+-- SQLBook: Markup
+#### Which of the customer types brings the most revenue?
+-- SQLBook: Code
+select customer_type, sum(total) as total_rev
+from wallmart_data
+group by customer_type
+order by total_rev desc
+
+Member,163625.1015
+Normal,157261.293
+-- SQLBook: Markup
+#### Which city has the largest tax percent/ VAT (**Value Added Tax**)?
+-- SQLBook: Code
+select city,
+sum(tax_pct) as vat
+from wallmart_data
+group by city
+order by vat desc
+
+Naypyitaw,5261.4655
+Yangon,5041.0005
+Mandalay,4977.8385
+-- SQLBook: Markup
+#### Which customer type pays the most in VAT?
+-- SQLBook: Code
+select customer_type, sum(tax_pct) as vat 
+from wallmart_data
+group by customer_type
+order by vat desc
+
+Member,7791.6715
+Normal,7488.633
+-- SQLBook: Markup
+## Customer related questions
+-- SQLBook: Markup
+#### How many unique customer types does the data have?
+-- SQLBook: Code
+select count(distinct(customer_type)) from wallmart_data
+
+2
+-- SQLBook: Markup
+#### How many unique payment methods does the data have?
+-- SQLBook: Code
+select count(distinct(payment)) from wallmart_data
+
+3
+-- SQLBook: Markup
+#### What is the most common customer type?
+-- SQLBook: Code
+select customer_type, count(customer_type) as count_cust
+from wallmart_data
+group by customer_type
+order by count_cust
+
+Normal,496
+Member,499
+-- SQLBook: Markup
+#### Which customer type buys the most?
+-- SQLBook: Code
+select customer_type, count(*) as num_cust_buy from wallmart_data
+group by customer_type
+order by num_cust_buy
+
+Normal,496
+Member,499
+-- SQLBook: Markup
+#### What is the gender of most of the customers?
+-- SQLBook: Code
+select gender, count(gender) as g_count
+from wallmart_data
+group by gender
+order by g_count desc
+
+Male,498
+Female,497
+-- SQLBook: Markup
+#### What is the gender distribution per branch?
+-- SQLBook: Code
+select gender, count(*)
+from wallmart_data
+where branch in ('A', 'B', 'C')
+group by gender
+-- SQLBook: Markup
+#### Which time of the day do customers give most ratings?
+-- SQLBook: Code
+select time_of_day, avg(rating) as avg_rating
+from wallmart_data
+group by time_of_day
+order by avg_rating desc
+
+AFTERNOON,7.0781
+MORNING,6.94474
+EVENING,6.89981
+-- SQLBook: Markup
+#### Which time of the day do customers give most ratings per branch?
+-- SQLBook: Code
+select time_of_day, avg(rating) as avg_rating
+from wallmart_data
+where branch = "B"
+group by time_of_day
+-- SQLBook: Markup
+#### Which day fo the week has the best avg ratings?
+-- SQLBook: Code
+select day_name, avg(rating) as avg_rating
+from wallmart_data
+group by day_name
+order by avg_rating desc
+
+Monday,7.13065
+Friday,7.05507
+Tuesday,7.00316
+Sunday,6.98864
+Saturday,6.90183
+Thursday,6.88986
+Wednesday,6.76028
+-- SQLBook: Markup
+#### Which day of the week has the best average ratings per branch?
+-- SQLBook: Code
+select day_name, avg(rating) as avg_rating
+from wallmart_data
+where branch = 'C'
+group by day_name
+order by avg_rating desc
+
+-- For branch A
+Friday,7.312
+
+-- For branch B 
+Monday,7.26579
+
+-- For branch C
+Saturday,7.22963
